@@ -65,7 +65,8 @@ class _MyHomePageState extends State<MyHomePage> {
             useIndicator: true,
             backgroundColor: Theme.of(context).colorScheme.onPrimary,
             indicatorColor: Theme.of(context).colorScheme.tertiaryContainer,
-            labelType: NavigationRailLabelType.selected,
+            labelType: NavigationRailLabelType
+                .none, //Fix this later as using selected is causing errors.
             selectedIndex: selectedIndex,
             onDestinationSelected: (value) {
               setState(() {
