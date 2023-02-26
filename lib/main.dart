@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -15,12 +15,14 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
       ),
-      home: MyHomePage(),
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key});
+
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
@@ -33,32 +35,52 @@ class _MyHomePageState extends State<MyHomePage> {
     Widget page;
     switch (selectedIndex) {
       case 0:
-        page = Placeholder();
+        page = const Placeholder();
         break;
       case 1:
-        page = Placeholder();
+        page = const Placeholder();
         break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
     }
-    return Scaffold(
-        body: Row(children: [
-      SafeArea(
-        child: NavigationRail(
-          extended: false,
-          destinations: [
-            NavigationRailDestination(
-              icon: Icon(Icons.home),
-              label: Text('Home'),
-            ),
-            NavigationRailDestination(
-              icon: Icon(Icons.favorite),
-              label: Text('Favorites'),
-            ),
-          ],
-          selectedIndex: selectedIndex,
+    return LayoutBuilder(builder: (context, constraints) {
+      return Scaffold(
+          body: Row(children: [
+        SafeArea(
+          child: NavigationRail(
+            extended: constraints.maxWidth >= 600,
+            destinations: const [
+              NavigationRailDestination(
+                icon: Icon(Icons.home_outlined),
+                selectedIcon: Icon(Icons.home),
+                label: Text('Home'),
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.bar_chart_outlined),
+                selectedIcon: Icon(Icons.bar_chart_rounded),
+                label: Text('Stats'),
+              ),
+            ],
+            minWidth: 90,
+            useIndicator: true,
+            backgroundColor: Theme.of(context).colorScheme.onPrimary,
+            indicatorColor: Theme.of(context).colorScheme.tertiaryContainer,
+            labelType: NavigationRailLabelType.selected,
+            selectedIndex: selectedIndex,
+            onDestinationSelected: (value) {
+              setState(() {
+                selectedIndex = value;
+              });
+            },
+          ),
         ),
-      )
-    ]));
+        Expanded(
+          child: Container(
+            color: Theme.of(context).colorScheme.primaryContainer,
+            child: page,
+          ),
+        )
+      ]));
+    });
   }
 }
