@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -35,7 +36,7 @@ class _MyHomePageState extends State<MyHomePage> {
     Widget page;
     switch (selectedIndex) {
       case 0:
-        page = const Placeholder();
+        page = TimerFocusPage();
         break;
       case 1:
         page = const Placeholder();
@@ -48,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
           body: Row(children: [
         SafeArea(
           child: NavigationRail(
-            extended: constraints.maxWidth >= 600,
+            extended: constraints.maxWidth >= 700,
             destinations: const [
               NavigationRailDestination(
                 icon: Icon(Icons.home_outlined),
@@ -61,7 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 label: Text('Stats'),
               ),
             ],
-            minWidth: 90,
+            minWidth: 70,
             useIndicator: true,
             backgroundColor: Theme.of(context).colorScheme.onPrimary,
             indicatorColor: Theme.of(context).colorScheme.tertiaryContainer,
@@ -84,4 +85,51 @@ class _MyHomePageState extends State<MyHomePage> {
       ]));
     });
   }
+}
+
+final int _focusTimeInMinutes = 25; //Change to 1 minute for dev purposes.
+
+class TimerFocusPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        body: Center(
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+          Text(
+            'Focus for $_focusTimeInMinutes minutes',
+            style: TextStyle(fontSize: 20),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () {
+              startTimer(context);
+            },
+            child: Text('Start'),
+          )
+        ])));
+  }
+}
+
+void startTimer(BuildContext context) {
+  Timer(Duration(minutes: _focusTimeInMinutes), () {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Time\'s up!'),
+            content: Text('You have focused for $_focusTimeInMinutes minutes.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              )
+            ],
+          );
+        });
+  });
 }
