@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 
 void main() {
   runApp(const MyApp());
@@ -36,10 +37,10 @@ class _MyHomePageState extends State<MyHomePage> {
     Widget page;
     switch (selectedIndex) {
       case 0:
-        page = TimerFocusPage();
+        page = FocusPage();
         break;
       case 1:
-        page = const Placeholder();
+        page = Placeholder();
         break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
@@ -87,49 +88,151 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-final int _focusTimeInMinutes = 25; //Change to 1 minute for dev purposes.
+class FocusPage extends StatefulWidget {
+  @override
+  _FocusPageState createState() => _FocusPageState();
+}
 
-class TimerFocusPage extends StatelessWidget {
+class _FocusPageState extends State<FocusPage> {
+  int _workTimeInMinutes = 1;
+  int _secondsRemaining = 0;
+  Timer? focusCountdownTimer;
+  bool _isRunning = false;
+  bool _isPaused = false;
+  bool _isFinished = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _secondsRemaining = _workTimeInMinutes * 60;
+  }
+
+  @override
+  void dispose() {
+    focusCountdownTimer?.cancel();
+    super.dispose();
+  }
+
+  void startTimer() {
+    setState(() {
+      _isRunning = true;
+    });
+
+    focusCountdownTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        if (_secondsRemaining > 0) {
+          _secondsRemaining--;
+        } else {
+          focusCountdownTimer!.cancel();
+          _isRunning = false;
+        }
+      });
+    });
+
+    Timer(Duration(minutes: _workTimeInMinutes), () {
+      resetTimer();
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Time\'s up!'),
+              content:
+                  Text('Great job staying focused. Time for a short break.'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK'),
+                )
+              ],
+            );
+          });
+    });
+  }
+
+  void stopTimer() {
+    focusCountdownTimer?.cancel();
+    setState(() {
+      _isRunning = false;
+      _isPaused = false;
+      _secondsRemaining = _workTimeInMinutes * 60;
+    });
+  }
+
+  void resetTimer() {
+    stopTimer();
+    setState(() {
+      _workTimeInMinutes = 1;
+    });
+  }
+
+  void pauseTimer() {
+    focusCountdownTimer?.cancel();
+    setState(() {
+      _isPaused = true;
+    });
+  }
+
+  void resumeTimer() {
+    startTimer();
+    setState(() {
+      _isPaused = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Center(
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-          Text(
-            'Focus for $_focusTimeInMinutes minutes',
-            style: TextStyle(fontSize: 20),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () {
-              startTimer(context);
-            },
-            child: Text('Start'),
-          )
-        ])));
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            CircularPercentIndicator(
+              radius: 200,
+              lineWidth: 10,
+              percent: _secondsRemaining / (_workTimeInMinutes * 60),
+              center: Text(
+                _formatDuration(Duration(seconds: _secondsRemaining)),
+                style: TextStyle(fontSize: 50),
+              ),
+              progressColor: Theme.of(context).colorScheme.primary,
+            ),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                if (!_isRunning)
+                  ElevatedButton(
+                    onPressed: startTimer,
+                    child: Text('Start'),
+                  ),
+                if (_isRunning)
+                  ElevatedButton(
+                    onPressed: stopTimer,
+                    child: Text('Stop'),
+                  ),
+                if (_isRunning && !_isPaused)
+                  ElevatedButton(
+                    onPressed: pauseTimer,
+                    child: Text('Pause'),
+                  ),
+                if (_isRunning && _isPaused)
+                  ElevatedButton(
+                    onPressed: resumeTimer,
+                    child: Text('Resume'),
+                  ),
+              ],
+            )
+          ],
+        ),
+      ),
+      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+    );
   }
-}
 
-void startTimer(BuildContext context) {
-  Timer(Duration(minutes: _focusTimeInMinutes), () {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Time\'s up!'),
-            content: Text('You have focused for $_focusTimeInMinutes minutes.'),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('OK'),
-              )
-            ],
-          );
-        });
-  });
+  String _formatDuration(Duration duration) {
+    return '${duration.inMinutes.toString().padLeft(2, '0')}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}';
+    ;
+  }
 }
