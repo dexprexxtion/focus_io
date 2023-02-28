@@ -207,13 +207,51 @@ class _FocusPageState extends State<FocusPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Center(
-      child: CircularPercentIndicator(
-        radius: 200,
-        lineWidth: 20,
-        percent: _secondsRemaining / (_workTimeInMinutes * 60),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            CircularPercentIndicator(
+              radius: 150,
+              lineWidth: 10,
+              percent: _secondsRemaining / (_workTimeInMinutes * 60),
+              center: Text(
+                _formatDuration(Duration(seconds: _secondsRemaining)),
+                style: TextStyle(fontSize: 50),
+              ),
+              progressColor: Theme.of(context).colorScheme.primary,
+            ),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                if (!_isRunning)
+                  ElevatedButton(
+                    onPressed: startTimer,
+                    child: Text('Start'),
+                  ),
+                if (_isRunning)
+                  ElevatedButton(
+                    onPressed: stopTimer,
+                    child: Text('Stop'),
+                  ),
+                if (_isRunning && !_isPaused)
+                  ElevatedButton(
+                    onPressed: pauseTimer,
+                    child: Text('Pause'),
+                  ),
+                if (_isRunning && _isPaused)
+                  ElevatedButton(
+                    onPressed: resumeTimer,
+                    child: Text('Resume'),
+                  ),
+              ],
+            )
+          ],
+        ),
       ),
-    ));
+      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+    );
   }
 
   String _formatDuration(Duration duration) {
