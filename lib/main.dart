@@ -45,13 +45,11 @@ class _MyHomePageState extends State<MyHomePage> {
       default:
         throw UnimplementedError('no widget for $selectedIndex');
     }
-    return LayoutBuilder(builder: (context, constraints) {
-      return Scaffold(
-          body: Row(children: [
-        SafeArea(
-          child: NavigationRail(
-            extended: constraints.maxWidth >= 700,
-            destinations: const [
+    if (MediaQuery.of(context).size.width > 640) {
+      return Row(
+        children: <Widget>[
+          NavigationRail(
+            destinations: [
               NavigationRailDestination(
                 icon: Icon(Icons.home_outlined),
                 selectedIcon: Icon(Icons.home),
@@ -67,8 +65,6 @@ class _MyHomePageState extends State<MyHomePage> {
             useIndicator: true,
             backgroundColor: Theme.of(context).colorScheme.onPrimary,
             indicatorColor: Theme.of(context).colorScheme.tertiaryContainer,
-            labelType: NavigationRailLabelType
-                .none, //Fix this later as using selected is causing errors.
             selectedIndex: selectedIndex,
             onDestinationSelected: (value) {
               setState(() {
@@ -76,15 +72,38 @@ class _MyHomePageState extends State<MyHomePage> {
               });
             },
           ),
-        ),
-        Expanded(
-          child: Container(
-            color: Theme.of(context).colorScheme.primaryContainer,
-            child: page,
-          ),
-        )
-      ]));
-    });
+          Expanded(
+            child: Container(
+              color: Theme.of(context).colorScheme.primaryContainer,
+              child: page,
+            ),
+          )
+        ],
+      );
+    } else {
+      return Scaffold(
+        bottomNavigationBar: BottomNavigationBar(
+            items: <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home_outlined),
+                activeIcon: Icon(Icons.home),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.bar_chart_outlined),
+                activeIcon: Icon(Icons.bar_chart_rounded),
+                label: 'Stats',
+              ),
+            ],
+            currentIndex: selectedIndex,
+            onTap: (int index) {
+              setState(() {
+                selectedIndex = index;
+              });
+            }),
+        body: page,
+      );
+    }
   }
 }
 
@@ -184,51 +203,13 @@ class _FocusPageState extends State<FocusPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            CircularPercentIndicator(
-              radius: 200,
-              lineWidth: 10,
-              percent: _secondsRemaining / (_workTimeInMinutes * 60),
-              center: Text(
-                _formatDuration(Duration(seconds: _secondsRemaining)),
-                style: TextStyle(fontSize: 50),
-              ),
-              progressColor: Theme.of(context).colorScheme.primary,
-            ),
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                if (!_isRunning)
-                  ElevatedButton(
-                    onPressed: startTimer,
-                    child: Text('Start'),
-                  ),
-                if (_isRunning)
-                  ElevatedButton(
-                    onPressed: stopTimer,
-                    child: Text('Stop'),
-                  ),
-                if (_isRunning && !_isPaused)
-                  ElevatedButton(
-                    onPressed: pauseTimer,
-                    child: Text('Pause'),
-                  ),
-                if (_isRunning && _isPaused)
-                  ElevatedButton(
-                    onPressed: resumeTimer,
-                    child: Text('Resume'),
-                  ),
-              ],
-            )
-          ],
-        ),
+        body: Center(
+      child: CircularPercentIndicator(
+        radius: 200,
+        lineWidth: 20,
+        percent: _secondsRemaining / (_workTimeInMinutes * 60),
       ),
-      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-    );
+    ));
   }
 
   String _formatDuration(Duration duration) {
