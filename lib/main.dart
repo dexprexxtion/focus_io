@@ -14,9 +14,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Focus.io',
       theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
-      ),
+          useMaterial3: true,
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+          fontFamily: 'Work Sans'),
       home: const MyHomePage(),
     );
   }
@@ -40,7 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
         page = FocusPage();
         break;
       case 1:
-        page = Placeholder();
+        page = StatsPage();
         break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
@@ -226,6 +226,7 @@ class _FocusPageState extends State<FocusPage> {
                 child: Text(
                   'Focus',
                   style: TextStyle(
+                    fontFamily: 'Abril Fatface',
                     fontSize: 64,
                     fontWeight: FontWeight.bold,
                   ),
@@ -234,13 +235,19 @@ class _FocusPageState extends State<FocusPage> {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              SizedBox(
+                height: 25,
+              ),
               CircularPercentIndicator(
                 radius: 150,
                 lineWidth: 10,
                 percent: _secondsRemaining / (_workTimeInMinutes * 60),
                 center: Text(
                   _formatDuration(Duration(seconds: _secondsRemaining)),
-                  style: TextStyle(fontSize: 50),
+                  style: TextStyle(
+                    fontSize: 48,
+                    fontFamily: 'Arbutus Slab',
+                  ),
                 ),
                 progressColor: Theme.of(context).colorScheme.primary,
               ),
@@ -285,5 +292,35 @@ class _FocusPageState extends State<FocusPage> {
   String _formatDuration(Duration duration) {
     return '${duration.inMinutes.toString().padLeft(2, '0')}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}';
     ;
+  }
+}
+
+class StatsPage extends StatefulWidget {
+  const StatsPage({super.key});
+
+  @override
+  State<StatsPage> createState() => _StatsPageState();
+}
+
+class _StatsPageState extends State<StatsPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        body: Column(
+      children: [
+        Align(
+            alignment: Alignment.topLeft,
+            child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  'Stats',
+                  style: TextStyle(
+                    fontFamily: 'Abril Fatface',
+                    fontSize: 64,
+                    fontWeight: FontWeight.bold,
+                  ),
+                )))
+      ],
+    ));
   }
 }
