@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       title: 'Focus.io',
       theme: ThemeData(
         useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
       ),
       home: const MyHomePage(),
     );
@@ -63,9 +63,21 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
             minWidth: 70,
             useIndicator: true,
-            backgroundColor: Theme.of(context).colorScheme.onInverseSurface,
-            indicatorColor: Theme.of(context).colorScheme.tertiaryContainer,
             labelType: NavigationRailLabelType.selected,
+            selectedIconTheme: IconThemeData(
+              color: Theme.of(context).colorScheme.onSecondaryContainer,
+            ),
+            indicatorColor: Theme.of(context).colorScheme.secondaryContainer,
+            selectedLabelTextStyle: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+            unselectedIconTheme: IconThemeData(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+            unselectedLabelTextStyle: TextStyle(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+            groupAlignment: 0.0,
             selectedIndex: selectedIndex,
             onDestinationSelected: (value) {
               setState(() {
@@ -83,28 +95,27 @@ class _MyHomePageState extends State<MyHomePage> {
       );
     } else {
       return Scaffold(
-        bottomNavigationBar: BottomNavigationBar(
-            items: <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home_outlined),
-                activeIcon: Icon(Icons.home),
-                label: 'Home',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.bar_chart_outlined),
-                activeIcon: Icon(Icons.bar_chart_rounded),
-                label: 'Stats',
-              ),
-            ],
-            backgroundColor: Theme.of(context).colorScheme.onInverseSurface,
-            selectedItemColor: Theme.of(context).colorScheme.primary,
-            showUnselectedLabels: false,
-            currentIndex: selectedIndex,
-            onTap: (int index) {
-              setState(() {
-                selectedIndex = index;
-              });
-            }),
+        bottomNavigationBar: NavigationBar(
+          destinations: <Widget>[
+            NavigationDestination(
+              icon: Icon(Icons.home_outlined),
+              selectedIcon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.bar_chart_outlined),
+              selectedIcon: Icon(Icons.bar_chart_rounded),
+              label: 'Stats',
+            ),
+          ],
+          backgroundColor: Theme.of(context).colorScheme.surface,
+          selectedIndex: selectedIndex,
+          onDestinationSelected: (value) {
+            setState(() {
+              selectedIndex = value;
+            });
+          },
+        ),
         body: page,
       );
     }
@@ -117,7 +128,7 @@ class FocusPage extends StatefulWidget {
 }
 
 class _FocusPageState extends State<FocusPage> {
-  int _workTimeInMinutes = 1;
+  int _workTimeInMinutes = 25;
   int _secondsRemaining = 0;
   Timer? focusCountdownTimer;
   bool _isRunning = false;
@@ -226,31 +237,31 @@ class _FocusPageState extends State<FocusPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 if (!_isRunning)
-                  ElevatedButton(
+                  FloatingActionButton(
                     onPressed: startTimer,
-                    child: Text('Start'),
+                    child: Icon(Icons.play_arrow),
                   ),
                 if (_isRunning)
-                  ElevatedButton(
+                  FloatingActionButton(
                     onPressed: stopTimer,
-                    child: Text('Stop'),
+                    child: Icon(Icons.stop),
                   ),
                 if (_isRunning && !_isPaused)
-                  ElevatedButton(
+                  FloatingActionButton(
                     onPressed: pauseTimer,
-                    child: Text('Pause'),
+                    child: Icon(Icons.pause),
                   ),
                 if (_isRunning && _isPaused)
-                  ElevatedButton(
+                  FloatingActionButton(
                     onPressed: resumeTimer,
-                    child: Text('Resume'),
+                    child: Icon(Icons.play_arrow),
                   ),
               ],
             )
           ],
         ),
       ),
-      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+      backgroundColor: Theme.of(context).colorScheme.surface,
     );
   }
 
