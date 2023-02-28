@@ -63,8 +63,9 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
             minWidth: 70,
             useIndicator: true,
-            backgroundColor: Theme.of(context).colorScheme.onPrimary,
+            backgroundColor: Theme.of(context).colorScheme.onInverseSurface,
             indicatorColor: Theme.of(context).colorScheme.tertiaryContainer,
+            labelType: NavigationRailLabelType.selected,
             selectedIndex: selectedIndex,
             onDestinationSelected: (value) {
               setState(() {
@@ -95,6 +96,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 label: 'Stats',
               ),
             ],
+            backgroundColor: Theme.of(context).colorScheme.onInverseSurface,
+            selectedItemColor: Theme.of(context).colorScheme.primary,
+            showUnselectedLabels: false,
             currentIndex: selectedIndex,
             onTap: (int index) {
               setState(() {
