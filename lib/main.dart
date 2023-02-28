@@ -133,7 +133,6 @@ class _FocusPageState extends State<FocusPage> {
   Timer? focusCountdownTimer;
   bool _isRunning = false;
   bool _isPaused = false;
-  bool _isFinished = false;
 
   @override
   void initState() {
@@ -218,48 +217,66 @@ class _FocusPageState extends State<FocusPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            CircularPercentIndicator(
-              radius: 150,
-              lineWidth: 10,
-              percent: _secondsRemaining / (_workTimeInMinutes * 60),
-              center: Text(
-                _formatDuration(Duration(seconds: _secondsRemaining)),
-                style: TextStyle(fontSize: 50),
+      body: Column(
+        children: [
+          Align(
+            alignment: Alignment.topLeft,
+            child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  'Focus',
+                  style: TextStyle(
+                    fontSize: 64,
+                    fontWeight: FontWeight.bold,
+                  ),
+                )),
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              CircularPercentIndicator(
+                radius: 150,
+                lineWidth: 10,
+                percent: _secondsRemaining / (_workTimeInMinutes * 60),
+                center: Text(
+                  _formatDuration(Duration(seconds: _secondsRemaining)),
+                  style: TextStyle(fontSize: 50),
+                ),
+                progressColor: Theme.of(context).colorScheme.primary,
               ),
-              progressColor: Theme.of(context).colorScheme.primary,
-            ),
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                if (!_isRunning)
-                  FloatingActionButton(
-                    onPressed: startTimer,
-                    child: Icon(Icons.play_arrow),
-                  ),
-                if (_isRunning)
-                  FloatingActionButton(
-                    onPressed: stopTimer,
-                    child: Icon(Icons.stop),
-                  ),
-                if (_isRunning && !_isPaused)
-                  FloatingActionButton(
-                    onPressed: pauseTimer,
-                    child: Icon(Icons.pause),
-                  ),
-                if (_isRunning && _isPaused)
-                  FloatingActionButton(
-                    onPressed: resumeTimer,
-                    child: Icon(Icons.play_arrow),
-                  ),
-              ],
-            )
-          ],
-        ),
+              SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  if (!_isRunning)
+                    FloatingActionButton(
+                      onPressed: startTimer,
+                      child: Icon(Icons.play_arrow),
+                      elevation: 0,
+                    ),
+                  if (_isRunning)
+                    FloatingActionButton(
+                      onPressed: stopTimer,
+                      child: Icon(Icons.stop),
+                      elevation: 0,
+                    ),
+                  if (_isRunning && !_isPaused)
+                    FloatingActionButton(
+                      onPressed: pauseTimer,
+                      child: Icon(Icons.pause),
+                      elevation: 0,
+                    ),
+                  if (_isRunning && _isPaused)
+                    FloatingActionButton(
+                      onPressed: resumeTimer,
+                      child: Icon(Icons.play_arrow),
+                      elevation: 0,
+                    ),
+                ],
+              )
+            ],
+          ),
+        ],
       ),
       backgroundColor: Theme.of(context).colorScheme.surface,
     );
