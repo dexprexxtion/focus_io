@@ -267,6 +267,9 @@ class _FocusPageState extends State<FocusPage> {
                       child: Icon(Icons.stop),
                       elevation: 0,
                     ),
+                  SizedBox(
+                    width: 10,
+                  ),
                   if (_isRunning && !_isPaused)
                     FloatingActionButton(
                       onPressed: pauseTimer,
