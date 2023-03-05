@@ -217,6 +217,20 @@ class _FocusPageState extends State<FocusPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Focus.io'),
+        centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.menu),
+          onPressed: () {},
+        ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {},
+          )
+        ],
+      ),
       body: Column(
         children: [
           Align(
@@ -309,21 +323,49 @@ class _StatsPageState extends State<StatsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+          title: Text('Focus.io'),
+          centerTitle: true,
+          leading: IconButton(
+            icon: Icon(Icons.menu),
+            onPressed: () {},
+          ),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () {},
+            )
+          ],
+        ),
         body: Column(
-      children: [
-        Align(
-            alignment: Alignment.topLeft,
-            child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  'Stats',
-                  style: TextStyle(
-                    fontFamily: 'Abril Fatface',
-                    fontSize: 64,
-                    fontWeight: FontWeight.bold,
-                  ),
-                )))
-      ],
-    ));
+          children: [
+            Align(
+                alignment: Alignment.topLeft,
+                child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(
+                      'Stats',
+                      style: TextStyle(
+                        fontFamily: 'Abril Fatface',
+                        fontSize: 64,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ))),
+            Placeholder(
+              fallbackHeight: 500,
+              fallbackWidth: double.infinity,
+              color: Theme.of(context).colorScheme.primary,
+              strokeWidth: 2,
+            ),
+            Text(
+              'Under Development',
+              style: TextStyle(
+                fontFamily: 'Arbutus Slab',
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            )
+          ],
+        ));
   }
 }
