@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 void main() {
@@ -128,7 +127,7 @@ class FocusPage extends StatefulWidget {
   _FocusPageState createState() => _FocusPageState();
 }
 
-class _FocusPageState extends State<FocusPage> with WidgetsBindingObserver {
+class _FocusPageState extends State<FocusPage> {
   int _workTimeInMinutes = 25;
   int _secondsRemaining = 0;
   Timer? focusCountdownTimer;
@@ -138,24 +137,13 @@ class _FocusPageState extends State<FocusPage> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
     _secondsRemaining = _workTimeInMinutes * 60;
   }
 
   @override
   void dispose() {
     focusCountdownTimer?.cancel();
-    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused && _isRunning) {
-      focusCountdownTimer?.cancel();
-    } else if (state == AppLifecycleState.resumed && _isRunning) {
-      startTimer();
-    }
   }
 
   void startTimer() {
