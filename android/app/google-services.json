@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "56793715512",
+    "project_id": "focus-io",
+    "storage_bucket": "focus-io.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:56793715512:android:6cb834ab46964f4e9ea7cd",
+        "android_client_info": {
+          "package_name": "com.dexprexxtion.focus_io"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "56793715512-p5j6bls0g9lvrqrke0dphi2d90p2uf1d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3DKl8pjPb5xgKkvjwKOw1-SH6rMNguBQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "56793715512-p5j6bls0g9lvrqrke0dphi2d90p2uf1d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
