@@ -1,18 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(const MyApp());
 }
-
-/* 
-await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-);
-*/
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -141,17 +134,34 @@ class _FocusPageState extends State<FocusPage> {
   Timer? focusCountdownTimer;
   bool _isRunning = false;
   bool _isPaused = false;
+  final String _remainingTimeKey = 'remaining_time';
 
   @override
   void initState() {
     super.initState();
+    _loadRemainingTimeFromPrefs().then((value) {
+      setState(() {
+        _secondsRemaining = value;
+      });
+    });
     _secondsRemaining = _workTimeInMinutes * 60;
   }
 
   @override
   void dispose() {
     focusCountdownTimer?.cancel();
+    _saveRemainingTimeToPrefs();
     super.dispose();
+  }
+
+  void _saveRemainingTimeToPrefs() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_remainingTimeKey, _secondsRemaining);
+  }
+
+  Future<int> _loadRemainingTimeFromPrefs() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getInt(_remainingTimeKey) ?? _workTimeInMinutes * 60;
   }
 
   void startTimer() {
@@ -168,6 +178,7 @@ class _FocusPageState extends State<FocusPage> {
           _isRunning = false;
         }
       });
+      _saveRemainingTimeToPrefs();
     });
 
     Timer(Duration(minutes: _workTimeInMinutes), () {
@@ -178,7 +189,7 @@ class _FocusPageState extends State<FocusPage> {
             return AlertDialog(
               title: Text('Time\'s up!'),
               content:
-                  Text('Great job staying focused. Time for a short break.'),
+              Text('Great job staying focused. Time for a short break.'),
               actions: <Widget>[
                 TextButton(
                   onPressed: () {
@@ -199,6 +210,7 @@ class _FocusPageState extends State<FocusPage> {
       _isPaused = false;
       _secondsRemaining = _workTimeInMinutes * 60;
     });
+    _saveRemainingTimeToPrefs();
   }
 
   void resetTimer() {
@@ -213,6 +225,7 @@ class _FocusPageState extends State<FocusPage> {
     setState(() {
       _isPaused = true;
     });
+    _saveRemainingTimeToPrefs();
   }
 
   void resumeTimer() {
@@ -319,6 +332,8 @@ class _FocusPageState extends State<FocusPage> {
     ;
   }
 }
+
+
 
 class StatsPage extends StatefulWidget {
   const StatsPage({super.key});
